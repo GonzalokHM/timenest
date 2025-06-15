@@ -1,5 +1,5 @@
--- Enable Row Level Security
-ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
+-- Enable Row Level Security (no usar con supabase)
+-- ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
 
 -- Create profiles table
 CREATE TABLE IF NOT EXISTS profiles (
@@ -109,3 +109,12 @@ CREATE INDEX IF NOT EXISTS idx_marketplace_posts_type ON marketplace_posts(type)
 CREATE INDEX IF NOT EXISTS idx_marketplace_posts_category ON marketplace_posts(category);
 CREATE INDEX IF NOT EXISTS idx_transactions_users ON transactions(from_user_id, to_user_id);
 CREATE INDEX IF NOT EXISTS idx_messages_users ON messages(from_user_id, to_user_id);
+
+-- Function to increment total_time_minutes for a profile
+CREATE OR REPLACE FUNCTION increment_total_time(user_id UUID, minutes INTEGER)
+RETURNS VOID AS $$
+  UPDATE profiles
+  SET total_time_minutes = COALESCE(total_time_minutes, 0) + minutes,
+      updated_at = NOW()
+  WHERE id = user_id;
+$$ LANGUAGE SQL;
