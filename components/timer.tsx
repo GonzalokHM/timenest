@@ -20,6 +20,7 @@ import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
 import { supabase } from '@/lib/supabase'
+import type { ActivityData } from '@/lib/types'
 import {
   Play,
   Pause,
@@ -66,7 +67,7 @@ export function Timer({ userId, currentTokens, onTokensUpdate }: TimerProps) {
   const [timeLeft, setTimeLeft] = useState(duration * 60)
   const [isRunning, setIsRunning] = useState(false)
   const [isCompleted, setIsCompleted] = useState(false)
-  const [recentActivities, setRecentActivities] = useState<any[]>([])
+  const [recentActivities, setRecentActivities] = useState<ActivityData[]>([])
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const { toast } = useToast()
 

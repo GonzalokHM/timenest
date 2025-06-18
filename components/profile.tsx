@@ -18,11 +18,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
 import { supabase } from '@/lib/supabase'
+import type { ProfileData, ActivityData } from '@/lib/types'
 import { Star, Clock, Coins, Edit, Save, X } from 'lucide-react'
 
 interface ProfileProps {
-  profile: any
-  onProfileUpdate: (profile: any) => void
+  profile: ProfileData | null
+  onProfileUpdate: (profile: ProfileData) => void
 }
 
 export function Profile({ profile, onProfileUpdate }: ProfileProps) {
@@ -210,7 +211,7 @@ export function Profile({ profile, onProfileUpdate }: ProfileProps) {
 }
 
 function ActivityHistory({ userId }: { userId: string }) {
-  const [activities, setActivities] = useState<any[]>([])
+  const [activities, setActivities] = useState<ActivityData[]>([])
   const [loading, setLoading] = useState(true)
 
   React.useEffect(() => {
