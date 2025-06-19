@@ -5,8 +5,11 @@ This project uses Next.js with Supabase as a backend. Follow the steps below to 
 ## Environment variables
 
 Create a `.env.local` file in the project root with the following keys from your Supabase project:
-`NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>`
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+```
 
 ## Database setup
 
@@ -17,8 +20,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>`
 ## Development
 
 Install dependencies with your preferred package manager and start the dev server:
-`bash
+
+```bash
   npm install
   npm run dev
-`
+```
+
 The app will be available at `http://localhost:3000`.
