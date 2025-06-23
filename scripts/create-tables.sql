@@ -113,6 +113,150 @@ CREATE POLICY "Users can send messages" ON messages FOR INSERT WITH CHECK (auth.
 CREATE POLICY "Users can view their appointments" ON appointments FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
 CREATE POLICY "Users can schedule appointments" ON appointments FOR INSERT WITH CHECK (auth.uid() = from_user_id);
 
+                -- para desarrollo, actualizaciones script en sql editor de supabase
+--  -- POLÍTICAS para "profiles"
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can view all profiles" ON profiles;
+-- EXCEPTION WHEN OTHERS THEN
+--   -- Ignore if doesn't exist
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can update own profile" ON profiles;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can insert own profile" ON profiles;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- CREATE POLICY "Users can view all profiles" ON profiles FOR SELECT USING (true);
+-- CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+-- CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
+
+-- -- POLÍTICAS para "activities"
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can view own activities" ON activities;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can insert own activities" ON activities;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- CREATE POLICY "Users can view own activities" ON activities FOR SELECT USING (auth.uid() = user_id);
+-- CREATE POLICY "Users can insert own activities" ON activities FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- -- POLÍTICAS para "marketplace_posts"
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can view all marketplace posts" ON marketplace_posts;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can insert own posts" ON marketplace_posts;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can update own posts" ON marketplace_posts;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- CREATE POLICY "Users can view all marketplace posts" ON marketplace_posts FOR SELECT USING (true);
+-- CREATE POLICY "Users can insert own posts" ON marketplace_posts FOR INSERT WITH CHECK (auth.uid() = user_id);
+-- CREATE POLICY "Users can update own posts" ON marketplace_posts FOR UPDATE USING (auth.uid() = user_id);
+
+-- -- POLÍTICAS para "transactions"
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can view own transactions" ON transactions;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can insert transactions" ON transactions;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- CREATE POLICY "Users can view own transactions" ON transactions FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
+-- CREATE POLICY "Users can insert transactions" ON transactions FOR INSERT WITH CHECK (auth.uid() = from_user_id);
+
+-- -- POLÍTICAS para "ratings"
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can view ratings for their transactions" ON ratings;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can insert ratings" ON ratings;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- CREATE POLICY "Users can view ratings for their transactions" ON ratings FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
+-- CREATE POLICY "Users can insert ratings" ON ratings FOR INSERT WITH CHECK (auth.uid() = from_user_id);
+
+-- -- POLÍTICAS para "messages"
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can view their messages" ON messages;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can send messages" ON messages;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- CREATE POLICY "Users can view their messages" ON messages FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
+-- CREATE POLICY "Users can send messages" ON messages FOR INSERT WITH CHECK (auth.uid() = from_user_id);
+
+-- -- POLÍTICAS para "appointments"
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can view their appointments" ON appointments;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can schedule appointments" ON appointments;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- CREATE POLICY "Users can view their appointments" ON appointments FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
+-- CREATE POLICY "Users can schedule appointments" ON appointments FOR INSERT WITH CHECK (auth.uid() = from_user_id);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_activities_user_id ON activities(user_id);
 CREATE INDEX IF NOT EXISTS idx_activities_created_at ON activities(created_at);
