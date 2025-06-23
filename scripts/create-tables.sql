@@ -1,6 +1,3 @@
--- Enable Row Level Security (no usar con supabase)
--- ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
-
 -- Create profiles table
 CREATE TABLE IF NOT EXISTS profiles (
   id UUID REFERENCES auth.users(id) PRIMARY KEY,
@@ -72,6 +69,17 @@ CREATE TABLE IF NOT EXISTS messages (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Create appointments table
+CREATE TABLE IF NOT EXISTS appointments (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  post_id UUID REFERENCES marketplace_posts(id) ON DELETE CASCADE,
+  from_user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  to_user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  scheduled_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  status TEXT DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'completed', 'cancelled')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Enable Row Level Security
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE activities ENABLE ROW LEVEL SECURITY;
@@ -79,6 +87,7 @@ ALTER TABLE marketplace_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ratings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 
 -- Create policies
 CREATE POLICY "Users can view all profiles" ON profiles FOR SELECT USING (true);
@@ -101,6 +110,9 @@ CREATE POLICY "Users can insert ratings" ON ratings FOR INSERT WITH CHECK (auth.
 CREATE POLICY "Users can view their messages" ON messages FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
 CREATE POLICY "Users can send messages" ON messages FOR INSERT WITH CHECK (auth.uid() = from_user_id);
 
+CREATE POLICY "Users can view their appointments" ON appointments FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
+CREATE POLICY "Users can schedule appointments" ON appointments FOR INSERT WITH CHECK (auth.uid() = from_user_id);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_activities_user_id ON activities(user_id);
 CREATE INDEX IF NOT EXISTS idx_activities_created_at ON activities(created_at);
@@ -109,6 +121,7 @@ CREATE INDEX IF NOT EXISTS idx_marketplace_posts_type ON marketplace_posts(type)
 CREATE INDEX IF NOT EXISTS idx_marketplace_posts_category ON marketplace_posts(category);
 CREATE INDEX IF NOT EXISTS idx_transactions_users ON transactions(from_user_id, to_user_id);
 CREATE INDEX IF NOT EXISTS idx_messages_users ON messages(from_user_id, to_user_id);
+CREATE INDEX IF NOT EXISTS idx_appointments_users ON appointments(from_user_id, to_user_id);
 
 -- Function to increment total_time_minutes for a profile
 CREATE OR REPLACE FUNCTION increment_total_time(user_id UUID, minutes INTEGER)

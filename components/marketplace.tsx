@@ -27,6 +27,8 @@ import {
 } from '@/components/ui/dialog'
 import { useToast } from '@/hooks/use-toast'
 import { supabase } from '@/lib/supabase'
+import { AppointmentDialog } from './appointment-dialog'
+import { ChatDialog } from '@/components/chat-dialog'
 import {
   Plus,
   Clock,
@@ -191,14 +193,6 @@ export function Marketplace({ userId, userTokens }: MarketplaceProps) {
     setFormDuration(30)
     setFormTokens(1)
     setFormCategory('')
-  }
-
-  const handleContact = async (postId: string, postTitle: string) => {
-    // In a real app, this would open a chat or send a message
-    toast({
-      title: 'Contacto iniciado',
-      description: `Se ha iniciado el contacto para "${postTitle}". En una versión completa, esto abriría un chat.`
-    })
   }
 
   const offers = filteredPosts.filter((post) => post.type === 'offer')
@@ -399,8 +393,8 @@ export function Marketplace({ userId, userTokens }: MarketplaceProps) {
                   key={post.id}
                   post={post}
                   userTokens={userTokens}
-                  onContact={handleContact}
                   isOwner={post.user_id === userId}
+                  currentUserId={userId}
                 />
               ))
             )}
@@ -421,8 +415,8 @@ export function Marketplace({ userId, userTokens }: MarketplaceProps) {
                   key={post.id}
                   post={post}
                   userTokens={userTokens}
-                  onContact={handleContact}
                   isOwner={post.user_id === userId}
+                  currentUserId={userId}
                 />
               ))
             )}
@@ -436,17 +430,18 @@ export function Marketplace({ userId, userTokens }: MarketplaceProps) {
 interface PostCardProps {
   post: MarketplacePost
   userTokens: number
-  onContact: (postId: string, postTitle: string) => void
   isOwner: boolean
+  currentUserId: string
 }
 
-function PostCard({ post, userTokens, onContact, isOwner }: PostCardProps) {
+function PostCard({ post, userTokens, isOwner, currentUserId }: PostCardProps) {
   const canAfford = userTokens >= post.tokens_required
   const typeColor =
     post.type === 'offer'
       ? 'bg-green-100 text-green-800'
       : 'bg-blue-100 text-blue-800'
   const typeText = post.type === 'offer' ? 'Ofrece' : 'Solicita'
+  const [chatOpen, setChatOpen] = useState(false)
 
   return (
     <Card className='h-full flex flex-col'>
@@ -495,14 +490,28 @@ function PostCard({ post, userTokens, onContact, isOwner }: PostCardProps) {
           </div>
 
           <Button
-            className='w-full'
-            onClick={() => onContact(post.id, post.title)}
+            className='w-full mb-2'
+            onClick={() => {
+              if (!isOwner) setChatOpen(true)
+            }}
             disabled={!canAfford && !isOwner}
             variant={isOwner ? 'outline' : 'default'}
           >
             <MessageCircle className='h-4 w-4 mr-2' />
             {isOwner ? 'Tu publicación' : 'Contactar'}
           </Button>
+          {!isOwner && (
+            <AppointmentDialog userId={currentUserId} postId={post.id} />
+          )}
+          {!isOwner && (
+            <ChatDialog
+              open={chatOpen}
+              onOpenChange={setChatOpen}
+              postId={post.id}
+              recipientId={post.user_id}
+              recipientName={post.profiles.name}
+            />
+          )}
         </div>
       </CardContent>
     </Card>

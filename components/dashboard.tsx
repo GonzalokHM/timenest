@@ -15,6 +15,7 @@ import { Timer } from '@/components/timer'
 import { Marketplace } from '@/components/marketplace'
 import { Profile } from '@/components/profile'
 import { supabase } from '@/lib/supabase'
+import type { ProfileData } from '@/lib/types'
 import {
   Clock,
   Coins,
@@ -27,19 +28,9 @@ import {
   Activity
 } from 'lucide-react'
 
-interface UserProfile {
-  id: string
-  name: string
-  bio?: string
-  avatar_url?: string
-  time_tokens: number
-  reputation: number
-  total_time_minutes: number
-}
-
 export function Dashboard() {
   const { user, signOut } = useAuth()
-  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [profile, setProfile] = useState<ProfileData | null>(null)
   const [weeklyTime, setWeeklyTime] = useState(0)
   const [loading, setLoading] = useState(true)
 
@@ -261,7 +252,10 @@ export function Dashboard() {
           </TabsContent>
 
           <TabsContent value='profile'>
-            <Profile profile={profile} onProfileUpdate={setProfile} />
+            <Profile
+              profile={profile}
+              onProfileUpdate={(updated) => setProfile(updated)}
+            />
           </TabsContent>
 
           <TabsContent value='community'>
