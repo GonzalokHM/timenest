@@ -501,7 +501,11 @@ function PostCard({ post, userTokens, isOwner, currentUserId }: PostCardProps) {
             {isOwner ? 'Tu publicación' : 'Contactar'}
           </Button>
           {!isOwner && (
-            <AppointmentDialog userId={currentUserId} postId={post.id} />
+            <AppointmentDialog
+              userId={currentUserId}
+              postId={post.id}
+              recipientId={post.user_id}
+            />
           )}
           {!isOwner && (
             <ChatDialog

@@ -6,9 +6,6 @@ export async function scheduleAppointment(params: {
   from_user_id: string
   to_user_id: string
   scheduled_at: string
-  userId: string
-  postId: string
-  datetime: Date
   status?: string
 }): Promise<AppointmentData | null> {
   const { data, error } = await supabase

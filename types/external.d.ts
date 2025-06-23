@@ -1,0 +1,8 @@
+declare module '@radix-ui/*'
+declare module 'cmdk'
+declare module 'vaul'
+declare module 'react-day-picker'
+declare module 'embla-carousel-react'
+declare module 'input-otp'
+declare module 'react-resizable-panels'
+declare module 'sonner'

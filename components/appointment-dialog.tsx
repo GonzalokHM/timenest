@@ -18,15 +18,25 @@ import { scheduleAppointment } from '@/lib/appointments'
 interface AppointmentDialogProps {
   userId: string
   postId: string
+  recipientId: string
 }
 
-export function AppointmentDialog({ userId, postId }: AppointmentDialogProps) {
+export function AppointmentDialog({
+  userId,
+  postId,
+  recipientId
+}: AppointmentDialogProps) {
   const [open, setOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
 
   const handleConfirm = async () => {
     if (!selectedDate) return
-    await scheduleAppointment(userId, postId, selectedDate)
+    await scheduleAppointment({
+      post_id: postId,
+      from_user_id: userId,
+      to_user_id: recipientId,
+      scheduled_at: selectedDate.toISOString()
+    })
     setOpen(false)
   }
 
