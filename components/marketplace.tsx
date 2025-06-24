@@ -435,7 +435,8 @@ interface PostCardProps {
 }
 
 function PostCard({ post, userTokens, isOwner, currentUserId }: PostCardProps) {
-  const canAfford = userTokens >= post.tokens_required
+  const canAfford =
+    post.type === 'offer' ? userTokens >= post.tokens_required : true
   const typeColor =
     post.type === 'offer'
       ? 'bg-green-100 text-green-800'

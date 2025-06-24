@@ -322,7 +322,9 @@ CREATE INDEX IF NOT EXISTS idx_availabilities_user ON availabilities(user_id);
 
 -- Function to increment total_time_minutes for a profile
 CREATE OR REPLACE FUNCTION increment_total_time(user_id UUID, minutes INTEGER)
-RETURNS VOID AS $$
+RETURNS VOID
+SET search_path = public
+ AS $$
   UPDATE profiles
   SET total_time_minutes = COALESCE(total_time_minutes, 0) + minutes,
       updated_at = NOW()

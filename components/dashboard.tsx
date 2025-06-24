@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Timer } from '@/components/timer'
 import { Marketplace } from '@/components/marketplace'
 import { Profile } from '@/components/profile'
+import { MessagesDialog } from '@/components/messages-dialog'
 import { supabase } from '@/lib/supabase'
 import type { ProfileData } from '@/lib/types'
 import {
@@ -35,6 +36,7 @@ export function Dashboard() {
   const [weeklyTime, setWeeklyTime] = useState(0)
   const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [messagesOpen, setMessagesOpen] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -149,14 +151,18 @@ export function Dashboard() {
                   {profile?.time_tokens || 0} TimeTokens
                 </span>
               </div>
-              <div className='relative'>
+              <button
+                type='button'
+                className='relative'
+                onClick={() => setMessagesOpen(true)}
+              >
                 <MessageCircle className='h-5 w-5 text-gray-600' />
                 {unreadCount > 0 && (
                   <span className='absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-[10px] px-1'>
                     {unreadCount}
                   </span>
                 )}
-              </div>
+              </button>
               <Button variant='ghost' size='sm' onClick={signOut}>
                 <LogOut className='h-4 w-4 mr-2' />
                 Salir
@@ -304,6 +310,11 @@ export function Dashboard() {
           </TabsContent>
         </Tabs>
       </main>
+      <MessagesDialog
+        userId={user?.id || ''}
+        open={messagesOpen}
+        onOpenChange={setMessagesOpen}
+      />
     </div>
   )
 }

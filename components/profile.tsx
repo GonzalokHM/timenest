@@ -21,6 +21,7 @@ import { supabase } from '@/lib/supabase'
 import type { ProfileData, ActivityData } from '@/lib/types'
 import { Star, Clock, Coins, Edit, Save, X } from 'lucide-react'
 import { AvailabilityDialog } from './availability-dialog'
+import { AvailabilityList } from './availability-list'
 
 interface ProfileProps {
   profile: ProfileData | null
@@ -32,6 +33,7 @@ export function Profile({ profile, onProfileUpdate }: ProfileProps) {
   const [editName, setEditName] = useState(profile?.name || '')
   const [editBio, setEditBio] = useState(profile?.bio || '')
   const [loading, setLoading] = useState(false)
+  const [refreshAvailabilities, setRefreshAvailabilities] = useState(0)
   const { toast } = useToast()
 
   const handleSaveProfile = async () => {
@@ -195,8 +197,15 @@ export function Profile({ profile, onProfileUpdate }: ProfileProps) {
           <CardHeader>
             <CardTitle className='text-lg'>Disponibilidad</CardTitle>
           </CardHeader>
-          <CardContent>
-            <AvailabilityDialog userId={profile.id} />
+          <CardContent className='space-y-4'>
+            <AvailabilityDialog
+              userId={profile.id}
+              onCreated={() => setRefreshAvailabilities((val) => val + 1)}
+            />
+            <AvailabilityList
+              userId={profile.id}
+              refresh={refreshAvailabilities}
+            />
           </CardContent>
         </Card>
       </div>
