@@ -20,6 +20,7 @@ import { useToast } from '@/hooks/use-toast'
 import { supabase } from '@/lib/supabase'
 import type { ProfileData, ActivityData } from '@/lib/types'
 import { Star, Clock, Coins, Edit, Save, X } from 'lucide-react'
+import { AvailabilityDialog } from './availability-dialog'
 
 interface ProfileProps {
   profile: ProfileData | null
@@ -188,6 +189,14 @@ export function Profile({ profile, onProfileUpdate }: ProfileProps) {
                 {(profile.total_time_minutes || 0) % 60}m
               </Badge>
             </div>
+          </CardContent>
+        </Card>
+        <Card className='mt-6'>
+          <CardHeader>
+            <CardTitle className='text-lg'>Disponibilidad</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <AvailabilityDialog userId={profile.id} />
           </CardContent>
         </Card>
       </div>

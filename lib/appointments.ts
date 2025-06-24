@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import type { AppointmentData } from './types'
+import type { AppointmentData, AvailabilityData } from './types'
 
 export async function scheduleAppointment(params: {
   post_id: string
@@ -37,4 +37,36 @@ export async function fetchAppointments(
 
   if (error) throw error
   return (data as AppointmentData[]) || []
+}
+
+export async function createAvailability(params: {
+  user_id: string
+  start_time: string
+  end_time: string
+  day_of_week: number
+  valid_from: string
+  valid_until: string
+}): Promise<AvailabilityData | null> {
+  const { data, error } = await supabase
+    .from('availabilities')
+    .insert([params])
+    .select()
+    .single()
+
+  if (error) throw error
+  return data as AvailabilityData
+}
+
+export async function fetchAvailabilities(
+  userId: string
+): Promise<AvailabilityData[]> {
+  const { data, error } = await supabase
+    .from('availabilities')
+    .select('*')
+    .eq('user_id', userId)
+    .order('day_of_week', { ascending: true })
+    .order('start_time', { ascending: true })
+
+  if (error) throw error
+  return (data as AvailabilityData[]) || []
 }

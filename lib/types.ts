@@ -26,3 +26,14 @@ export interface AppointmentData {
   status: string
   created_at: string
 }
+
+export interface AvailabilityData {
+  id: string
+  user_id: string
+  start_time: string
+  end_time: string
+  day_of_week: number
+  valid_from: string
+  valid_until: string
+  created_at: string
+}
