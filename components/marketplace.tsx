@@ -27,8 +27,11 @@ import {
 } from '@/components/ui/dialog'
 import { useToast } from '@/hooks/use-toast'
 import { supabase } from '@/lib/supabase'
+import { fetchAppointments } from '@/lib/appointments'
 import { AppointmentDialog } from './appointment-dialog'
 import { ChatDialog } from '@/components/chat-dialog'
+import { AppointmentsList } from '@/components/appointments-list'
+import type { AppointmentData } from '@/lib/types'
 import {
   Plus,
   Clock,
@@ -78,6 +81,7 @@ const CATEGORIES = [
 export function Marketplace({ userId, userTokens }: MarketplaceProps) {
   const [posts, setPosts] = useState<MarketplacePost[]>([])
   const [filteredPosts, setFilteredPosts] = useState<MarketplacePost[]>([])
+  const [appointments, setAppointments] = useState<AppointmentData[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -94,6 +98,7 @@ export function Marketplace({ userId, userTokens }: MarketplaceProps) {
 
   useEffect(() => {
     loadPosts()
+    loadAppointments()
   }, [])
 
   useEffect(() => {
@@ -125,6 +130,11 @@ export function Marketplace({ userId, userTokens }: MarketplaceProps) {
       setPosts(data || [])
     }
     setLoading(false)
+  }
+
+  const loadAppointments = async () => {
+    const data = await fetchAppointments(userId)
+    setAppointments(data)
   }
 
   const filterPosts = () => {
@@ -377,6 +387,13 @@ export function Marketplace({ userId, userTokens }: MarketplaceProps) {
             <Search className='h-4 w-4' />
             <span>Solicitudes ({requests.length})</span>
           </TabsTrigger>
+          <TabsTrigger
+            value='appointments'
+            className='flex items-center space-x-2'
+          >
+            <Clock className='h-4 w-4' />
+            <span>Citas ({appointments.length})</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value='offers'>
@@ -421,6 +438,13 @@ export function Marketplace({ userId, userTokens }: MarketplaceProps) {
               ))
             )}
           </div>
+        </TabsContent>
+
+        <TabsContent value='appointments'>
+          <AppointmentsList
+            currentUserId={userId}
+            appointments={appointments}
+          />
         </TabsContent>
       </Tabs>
     </div>

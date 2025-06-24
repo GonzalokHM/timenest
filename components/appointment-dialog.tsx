@@ -18,11 +18,13 @@ import {
   SelectContent,
   SelectItem
 } from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
 import {
   scheduleAppointment,
   fetchAvailabilities,
   fetchAppointments
 } from '@/lib/appointments'
+import { useToast } from '@/hooks/use-toast'
 
 interface AppointmentDialogProps {
   userId: string
@@ -38,6 +40,8 @@ export function AppointmentDialog({
   const [open, setOpen] = useState(false)
   const [slots, setSlots] = useState<{ label: string; value: string }[]>([])
   const [selectedSlot, setSelectedSlot] = useState<string>()
+  const [meetingUrl, setMeetingUrl] = useState('')
+  const { toast } = useToast()
 
   useEffect(() => {
     if (open) {
@@ -86,8 +90,10 @@ export function AppointmentDialog({
       post_id: postId,
       from_user_id: userId,
       to_user_id: recipientId,
-      scheduled_at: selectedSlot
+      scheduled_at: selectedSlot,
+      meeting_url: meetingUrl || undefined
     })
+    toast({ title: 'Cita agendada', description: '...' })
     setOpen(false)
   }
 
@@ -119,6 +125,12 @@ export function AppointmentDialog({
             </SelectContent>
           </Select>
         )}
+        <Input
+          className='mt-4'
+          placeholder='Enlace de la reunión (opcional)'
+          value={meetingUrl}
+          onChange={(e) => setMeetingUrl(e.target.value)}
+        />
         <DialogFooter className='flex justify-end'>
           <Button variant='outline' onClick={() => setOpen(false)}>
             Cancelar

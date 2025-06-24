@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS appointments (
   from_user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   to_user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
   scheduled_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  meeting_url TEXT,
   status TEXT DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'completed', 'cancelled')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

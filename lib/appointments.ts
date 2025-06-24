@@ -6,6 +6,7 @@ export async function scheduleAppointment(params: {
   from_user_id: string
   to_user_id: string
   scheduled_at: string
+  meeting_url?: string
   status?: string
 }): Promise<AppointmentData | null> {
   const { data, error } = await supabase
@@ -16,6 +17,7 @@ export async function scheduleAppointment(params: {
         from_user_id: params.from_user_id,
         to_user_id: params.to_user_id,
         scheduled_at: params.scheduled_at,
+        meeting_url: params.meeting_url,
         status: params.status ?? 'scheduled'
       }
     ])

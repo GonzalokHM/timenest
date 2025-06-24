@@ -24,6 +24,7 @@ export interface AppointmentData {
   to_user_id: string
   scheduled_at: string
   status: string
+  meeting_url?: string | null
   created_at: string
 }
 
