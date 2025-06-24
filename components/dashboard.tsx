@@ -23,6 +23,7 @@ import {
   TrendingUp,
   Users,
   LogOut,
+  MessageCircle,
   User,
   Store,
   Activity
@@ -32,12 +33,14 @@ export function Dashboard() {
   const { user, signOut } = useAuth()
   const [profile, setProfile] = useState<ProfileData | null>(null)
   const [weeklyTime, setWeeklyTime] = useState(0)
+  const [unreadCount, setUnreadCount] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (user) {
       loadProfile()
       loadWeeklyTime()
+      loadUnreadCount()
     }
   }, [user])
 
@@ -98,6 +101,20 @@ export function Dashboard() {
     }
   }
 
+  const loadUnreadCount = async () => {
+    if (!user) return
+
+    const { data } = await supabase
+      .from('messages')
+      .select('id')
+      .eq('to_user_id', user.id)
+      .eq('read', false)
+
+    if (data) {
+      setUnreadCount(data.length)
+    }
+  }
+
   const handleTokensUpdate = (newTokens: number) => {
     if (profile) {
       setProfile({ ...profile, time_tokens: newTokens })
@@ -131,6 +148,14 @@ export function Dashboard() {
                 <span className='font-medium'>
                   {profile?.time_tokens || 0} TimeTokens
                 </span>
+              </div>
+              <div className='relative'>
+                <MessageCircle className='h-5 w-5 text-gray-600' />
+                {unreadCount > 0 && (
+                  <span className='absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-[10px] px-1'>
+                    {unreadCount}
+                  </span>
+                )}
               </div>
               <Button variant='ghost' size='sm' onClick={signOut}>
                 <LogOut className='h-4 w-4 mr-2' />

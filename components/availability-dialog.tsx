@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select'
 import { createAvailability } from '@/lib/appointments'
 import { addMonths, format } from 'date-fns'
+import { DialogDescription } from '@radix-ui/react-dialog'
 
 interface AvailabilityDialogProps {
   userId: string
@@ -30,11 +31,12 @@ export function AvailabilityDialog({ userId }: AvailabilityDialogProps) {
   const [start, setStart] = useState('17:00')
   const [end, setEnd] = useState('20:00')
   const [day, setDay] = useState('1') // Monday
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const threeMonths = format(addMonths(new Date(), 3), 'yyyy-MM-dd')
+  const [validFrom, setValidFrom] = useState(today)
+  const [validUntil, setValidUntil] = useState(threeMonths)
 
   const handleSave = async () => {
-    const now = new Date()
-    const validFrom = format(now, 'yyyy-MM-dd')
-    const validUntil = format(addMonths(now, 3), 'yyyy-MM-dd')
     await createAvailability({
       user_id: userId,
       start_time: start + ':00',
@@ -54,6 +56,7 @@ export function AvailabilityDialog({ userId }: AvailabilityDialogProps) {
       <DialogContent className='sm:max-w-[400px]'>
         <DialogHeader>
           <DialogTitle>Nueva disponibilidad</DialogTitle>
+          <DialogDescription>elige disponibilidad</DialogDescription>
         </DialogHeader>
         <div className='space-y-4'>
           <div className='space-y-2'>
@@ -87,6 +90,22 @@ export function AvailabilityDialog({ userId }: AvailabilityDialogProps) {
               type='time'
               value={end}
               onChange={(e) => setEnd(e.target.value)}
+            />
+          </div>
+          <div className='space-y-2'>
+            <label className='text-sm font-medium'>Válido desde</label>
+            <Input
+              type='date'
+              value={validFrom}
+              onChange={(e) => setValidFrom(e.target.value)}
+            />
+          </div>
+          <div className='space-y-2'>
+            <label className='text-sm font-medium'>Válido hasta</label>
+            <Input
+              type='date'
+              value={validUntil}
+              onChange={(e) => setValidUntil(e.target.value)}
             />
           </div>
         </div>

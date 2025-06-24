@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/components/auth-provider'
+import { useToast } from '@/hooks/use-toast'
 
 interface ChatDialogProps {
   open: boolean
@@ -38,9 +39,23 @@ export function ChatDialog({
   recipientName
 }: ChatDialogProps) {
   const { user } = useAuth()
+  const { toast } = useToast()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open || !user) return
+
+    const markRead = async () => {
+      await supabase
+        .from('messages')
+        .update({ read: true })
+        .match({ post_id: postId, to_user_id: user.id, read: false })
+    }
+
+    markRead()
+  }, [open, user, postId])
 
   useEffect(() => {
     if (!open || !user) return
@@ -90,14 +105,25 @@ export function ChatDialog({
     e.preventDefault()
     if (!user || !newMessage.trim()) return
 
-    const { error } = await supabase.from('messages').insert({
-      from_user_id: user.id,
-      to_user_id: recipientId,
-      post_id: postId,
-      content: newMessage.trim()
-    })
+    const { data, error } = await supabase
+      .from('messages')
+      .insert({
+        from_user_id: user.id,
+        to_user_id: recipientId,
+        post_id: postId,
+        content: newMessage.trim()
+      })
+      .select()
+      .single()
 
-    if (!error) {
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'No se pudo enviar el mensaje',
+        variant: 'destructive'
+      })
+    } else if (data) {
+      setMessages((prev) => [...prev, data])
       setNewMessage('')
     }
   }
