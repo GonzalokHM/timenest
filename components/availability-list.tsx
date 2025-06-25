@@ -15,10 +15,10 @@ const DAYS = [
   'Domingo',
   'Lunes',
   'Martes',
-  'Mi\u00e9rcoles',
+  'Miércoles',
   'Jueves',
   'Viernes',
-  'S\u00e1bado'
+  'Sábado'
 ]
 
 export function AvailabilityList({ userId, refresh }: AvailabilityListProps) {

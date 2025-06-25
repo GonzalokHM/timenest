@@ -8,14 +8,13 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter
+  DialogFooter,
+  DialogDescription
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { createAvailability } from '@/lib/appointments'
 import { addMonths, format } from 'date-fns'
-import { DialogDescription } from '@radix-ui/react-dialog'
-
 interface AvailabilityDialogProps {
   userId: string
   onCreated?: () => void
@@ -25,10 +24,10 @@ const DAY_NAMES = [
   'Domingo',
   'Lunes',
   'Martes',
-  'Mi\u00e9rcoles',
+  'Miércoles',
   'Jueves',
   'Viernes',
-  'S\u00e1bado'
+  'Sábado'
 ]
 
 export function AvailabilityDialog({

@@ -148,7 +148,7 @@ CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR UPDATE USING
 CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR DELETE USING (auth.uid() = user_id);
 
                 -- para desarrollo, actualizaciones script en sql editor de supabase
---  -- POLÍTICAS para "profiles"
+   --  -- POLÍTICAS para "profiles"
 -- DO $$
 -- BEGIN
 --   DROP POLICY "Users can view all profiles" ON profiles;
@@ -175,7 +175,7 @@ CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR DELETE USING
 -- CREATE POLICY "Users can update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
 -- CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
--- -- POLÍTICAS para "activities"
+   -- -- POLÍTICAS para "activities"
 -- DO $$
 -- BEGIN
 --   DROP POLICY "Users can view own activities" ON activities;
@@ -193,7 +193,7 @@ CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR DELETE USING
 -- CREATE POLICY "Users can view own activities" ON activities FOR SELECT USING (auth.uid() = user_id);
 -- CREATE POLICY "Users can insert own activities" ON activities FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- -- POLÍTICAS para "marketplace_posts"
+   -- -- POLÍTICAS para "marketplace_posts"
 -- DO $$
 -- BEGIN
 --   DROP POLICY "Users can view all marketplace posts" ON marketplace_posts;
@@ -219,7 +219,7 @@ CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR DELETE USING
 -- CREATE POLICY "Users can insert own posts" ON marketplace_posts FOR INSERT WITH CHECK (auth.uid() = user_id);
 -- CREATE POLICY "Users can update own posts" ON marketplace_posts FOR UPDATE USING (auth.uid() = user_id);
 
--- -- POLÍTICAS para "transactions"
+   -- -- POLÍTICAS para "transactions"
 -- DO $$
 -- BEGIN
 --   DROP POLICY "Users can view own transactions" ON transactions;
@@ -237,7 +237,7 @@ CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR DELETE USING
 -- CREATE POLICY "Users can view own transactions" ON transactions FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
 -- CREATE POLICY "Users can insert transactions" ON transactions FOR INSERT WITH CHECK (auth.uid() = from_user_id);
 
--- -- POLÍTICAS para "ratings"
+   -- -- POLÍTICAS para "ratings"
 -- DO $$
 -- BEGIN
 --   DROP POLICY "Users can view ratings for their transactions" ON ratings;
@@ -255,7 +255,7 @@ CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR DELETE USING
 -- CREATE POLICY "Users can view ratings for their transactions" ON ratings FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
 -- CREATE POLICY "Users can insert ratings" ON ratings FOR INSERT WITH CHECK (auth.uid() = from_user_id);
 
--- -- POLÍTICAS para "messages"
+   -- -- POLÍTICAS para "messages"
 -- DO $$
 -- BEGIN
 --   DROP POLICY "Users can view their messages" ON messages;
@@ -273,7 +273,7 @@ CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR DELETE USING
 -- CREATE POLICY "Users can view their messages" ON messages FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
 -- CREATE POLICY "Users can send messages" ON messages FOR INSERT WITH CHECK (auth.uid() = from_user_id);
 
--- -- POLÍTICAS para "appointments"
+   -- -- POLÍTICAS para "appointments"
 -- DO $$
 -- BEGIN
 --   DROP POLICY "Users can view their appointments" ON appointments;
@@ -291,7 +291,7 @@ CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR DELETE USING
 -- CREATE POLICY "Users can view their appointments" ON appointments FOR SELECT USING (auth.uid() = from_user_id OR auth.uid() = to_user_id);
 -- CREATE POLICY "Users can schedule appointments" ON appointments FOR INSERT WITH CHECK (auth.uid() = from_user_id);
 
--- POLÍTICAS para "availabilities"
+    -- POLÍTICAS para "availabilities"
 -- DO $$
 -- BEGIN
 --   DROP POLICY "Users can view availabilities" ON availabilities;
@@ -324,6 +324,41 @@ CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR DELETE USING
 -- CREATE POLICY "Users can insert availabilities" ON availabilities FOR INSERT WITH CHECK (auth.uid() = user_id);
 -- CREATE POLICY "Users can update availabilities" ON availabilities FOR UPDATE USING (auth.uid() = user_id);
 -- CREATE POLICY "Users can delete availabilities" ON availabilities FOR DELETE USING (auth.uid() = user_id);
+
+       -- POLÍTICAS para "zoom"
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can view their zoom tokens" ON zoom_tokens;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can insert their zoom tokens" ON zoom_tokens;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can update their zoom tokens" ON zoom_tokens;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- DO $$
+-- BEGIN
+--   DROP POLICY "Users can delete their zoom tokens" ON zoom_tokens;
+-- EXCEPTION WHEN OTHERS THEN
+-- END
+-- $$;
+
+-- -- CREATE POLICIES
+-- CREATE POLICY "Users can view their zoom tokens" ON zoom_tokens FOR SELECT USING (auth.uid() = user_id);
+-- CREATE POLICY "Users can insert their zoom tokens" ON zoom_tokens FOR INSERT WITH CHECK (auth.uid() = user_id);
+-- CREATE POLICY "Users can update their zoom tokens" ON zoom_tokens FOR UPDATE USING (auth.uid() = user_id);
+-- CREATE POLICY "Users can delete their zoom tokens" ON zoom_tokens FOR DELETE USING (auth.uid() = user_id);
 
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_activities_user_id ON activities(user_id);

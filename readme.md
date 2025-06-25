@@ -9,6 +9,10 @@ Create a `.env.local` file in the project root with the following keys from your
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+
+ZOOM_CLIENT_ID – OAuth client ID for your Zoom app.
+ZOOM_CLIENT_SECRET – OAuth client secret for your Zoom app.
+ZOOM_REDIRECT_URL` – URL Zoom redirects to after authorization.
 ```
 
 ## Database setup

@@ -24,14 +24,14 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Pr\u00f3xima cita</CardTitle>
+        <CardTitle>Próxima cita</CardTitle>
       </CardHeader>
       <CardContent>
         <p>{new Date(appointment.scheduled_at).toLocaleString('es-ES')}</p>
       </CardContent>
       {appointment.meeting_url && (
         <CardFooter>
-          <Button onClick={handleJoin}>Unirse a la reuni\u00f3n</Button>
+          <Button onClick={handleJoin}>Unirse a la reunión</Button>
         </CardFooter>
       )}
     </Card>
