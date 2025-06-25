@@ -38,3 +38,11 @@ export interface AvailabilityData {
   valid_until: string
   created_at: string
 }
+
+export interface ZoomTokenData {
+  user_id: string
+  access_token: string
+  refresh_token: string
+  expires_at: string
+  created_at: string
+}

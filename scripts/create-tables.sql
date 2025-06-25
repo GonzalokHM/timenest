@@ -93,6 +93,15 @@ CREATE TABLE IF NOT EXISTS appointments (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Create zoom_tokens table
+CREATE TABLE IF NOT EXISTS zoom_tokens (
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE PRIMARY KEY,
+  access_token TEXT NOT NULL,
+  refresh_token TEXT NOT NULL,
+  expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Enable Row Level Security
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE activities ENABLE ROW LEVEL SECURITY;
@@ -101,6 +110,7 @@ ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ratings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE zoom_tokens ENABLE ROW LEVEL SECURITY;
 ALTER TABLE availabilities ENABLE ROW LEVEL SECURITY;
 
 -- Create policies
@@ -131,6 +141,11 @@ CREATE POLICY "Users can view availabilities" ON availabilities FOR SELECT USING
 CREATE POLICY "Users can manage own availabilities" ON availabilities FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Users can manage own availabilities" ON availabilities FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "Users can manage own availabilities" ON availabilities FOR DELETE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can manage own zoom tokens" ON zoom_tokens FOR DELETE USING (auth.uid() = user_id);
 
                 -- para desarrollo, actualizaciones script en sql editor de supabase
 --  -- POLÍTICAS para "profiles"
@@ -320,6 +335,7 @@ CREATE INDEX IF NOT EXISTS idx_transactions_users ON transactions(from_user_id, 
 CREATE INDEX IF NOT EXISTS idx_messages_users ON messages(from_user_id, to_user_id);
 CREATE INDEX IF NOT EXISTS idx_appointments_users ON appointments(from_user_id, to_user_id);
 CREATE INDEX IF NOT EXISTS idx_availabilities_user ON availabilities(user_id);
+CREATE INDEX IF NOT EXISTS idx_zoom_tokens_user ON zoom_tokens(user_id);
 
 -- Function to increment total_time_minutes for a profile
 CREATE OR REPLACE FUNCTION increment_total_time(user_id UUID, minutes INTEGER)

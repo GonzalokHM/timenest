@@ -86,12 +86,24 @@ export function AppointmentDialog({
   }
   const handleConfirm = async () => {
     if (!selectedSlot) return
+    let url = meetingUrl
+    if (!url) {
+      const res = await fetch('/api/zoom/create-meeting', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      })
+      if (res.ok) {
+        const data = await res.json()
+        url = data.join_url
+      }
+    }
     await scheduleAppointment({
       post_id: postId,
       from_user_id: userId,
       to_user_id: recipientId,
       scheduled_at: selectedSlot,
-      meeting_url: meetingUrl || undefined
+      meeting_url: url || undefined
     })
     toast({ title: 'Cita agendada', description: '...' })
     setOpen(false)
