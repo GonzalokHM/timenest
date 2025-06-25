@@ -314,6 +314,7 @@ export function Dashboard() {
         userId={user?.id || ''}
         open={messagesOpen}
         onOpenChange={setMessagesOpen}
+        onMessagesRead={loadUnreadCount}
       />
     </div>
   )

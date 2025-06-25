@@ -20,6 +20,7 @@ interface ChatDialogProps {
   postId: string
   recipientId: string
   recipientName: string
+  onMessagesRead?: () => void
 }
 
 interface Message {
@@ -36,7 +37,8 @@ export function ChatDialog({
   onOpenChange,
   postId,
   recipientId,
-  recipientName
+  recipientName,
+  onMessagesRead
 }: ChatDialogProps) {
   const { user } = useAuth()
   const { toast } = useToast()
@@ -52,10 +54,12 @@ export function ChatDialog({
         .from('messages')
         .update({ read: true })
         .match({ post_id: postId, to_user_id: user.id, read: false })
+
+      onMessagesRead?.()
     }
 
     markRead()
-  }, [open, user, postId])
+  }, [open, user, postId, onMessagesRead])
 
   useEffect(() => {
     if (!open || !user) return

@@ -16,6 +16,7 @@ interface MessagesDialogProps {
   userId: string
   open: boolean
   onOpenChange: (open: boolean) => void
+  onMessagesRead?: () => void
 }
 
 interface Conversation {
@@ -29,7 +30,8 @@ interface Conversation {
 export function MessagesDialog({
   userId,
   open,
-  onOpenChange
+  onOpenChange,
+  onMessagesRead
 }: MessagesDialogProps) {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [chatData, setChatData] = useState<Conversation | null>(null)
@@ -136,6 +138,7 @@ export function MessagesDialog({
           postId={chatData.post_id}
           recipientId={chatData.other_user_id}
           recipientName={chatData.other_user_name}
+          onMessagesRead={onMessagesRead}
         />
       )}
     </>
