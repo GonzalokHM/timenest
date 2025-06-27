@@ -72,3 +72,8 @@ export async function fetchAvailabilities(
   if (error) throw error
   return (data as AvailabilityData[]) || []
 }
+export async function deleteAvailability(id: string): Promise<void> {
+  const { error } = await supabase.from('availabilities').delete().eq('id', id)
+
+  if (error) throw error
+}

@@ -46,6 +46,49 @@ export function Dashboard() {
     }
   }, [user])
 
+  useEffect(() => {
+    if (!user) return
+
+    const channel = supabase
+      .channel(`unread-messages-${user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `to_user_id=eq.${user.id}`
+        },
+        (payload) => {
+          const msg = payload.new as { read: boolean }
+          if (!msg.read) {
+            setUnreadCount((c) => c + 1)
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'messages',
+          filter: `to_user_id=eq.${user.id}`
+        },
+        (payload) => {
+          const oldVal = payload.old as { read: boolean }
+          const newVal = payload.new as { read: boolean }
+          if (!oldVal.read && newVal.read) {
+            setUnreadCount((c) => Math.max(c - 1, 0))
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [user])
+
   const loadProfile = async () => {
     if (!user) return
 

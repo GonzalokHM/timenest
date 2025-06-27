@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { fetchAvailabilities } from '@/lib/appointments'
+import { fetchAvailabilities, deleteAvailability } from '@/lib/appointments'
 import type { AvailabilityData } from '@/lib/types'
 import { Badge } from '@/components/ui/badge'
-import { Clock } from 'lucide-react'
+import { Clock, Trash } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast'
 
 interface AvailabilityListProps {
   userId: string
@@ -24,6 +25,7 @@ const DAYS = [
 export function AvailabilityList({ userId, refresh }: AvailabilityListProps) {
   const [loading, setLoading] = useState(true)
   const [availabilities, setAvailabilities] = useState<AvailabilityData[]>([])
+  const { toast } = useToast()
 
   useEffect(() => {
     loadAvailabilities()
@@ -33,6 +35,20 @@ export function AvailabilityList({ userId, refresh }: AvailabilityListProps) {
     const data = await fetchAvailabilities(userId)
     setAvailabilities(data)
     setLoading(false)
+  }
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteAvailability(id)
+      setAvailabilities((prev) => prev.filter((a) => a.id !== id))
+      toast({ title: 'Disponibilidad eliminada' })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'No se pudo eliminar la disponibilidad',
+        variant: 'destructive'
+      })
+    }
   }
 
   if (loading) {
@@ -68,7 +84,18 @@ export function AvailabilityList({ userId, refresh }: AvailabilityListProps) {
               {av.valid_from} - {av.valid_until}
             </p>
           </div>
-          <Badge variant='secondary'>{DAYS[av.day_of_week].slice(0, 3)}</Badge>
+          <div className='flex items-center space-x-2'>
+            <Badge variant='secondary'>
+              {DAYS[av.day_of_week].slice(0, 3)}
+            </Badge>
+            <button
+              type='button'
+              onClick={() => handleDelete(av.id)}
+              className='text-red-500 hover:text-red-700'
+            >
+              <Trash className='h-4 w-4' />
+            </button>
+          </div>
         </div>
       ))}
     </div>
