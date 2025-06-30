@@ -1,27 +1,20 @@
 import { supabase } from '@/lib/supabase'
-import {
-  generatePKCEVerifier,
-  generatePKCEChallenge
-} from '@supabase/auth-js/dist/module/lib/helpers'
 import { type NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
-  const { origin } = new URL(request.url)
-
-  const codeVerifier = generatePKCEVerifier()
-  const codeChallenge = await generatePKCEChallenge(codeVerifier)
-  const codeChallengeMethod = codeVerifier === codeChallenge ? 'plain' : 's256'
+  const { origin, searchParams } = new URL(request.url)
+  const next = searchParams.get('next') ?? '/'
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${origin}/auth/callback`,
-      queryParams: {
-        code_challenge: codeChallenge,
-        code_challenge_method: codeChallengeMethod
-      }
+      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`
     }
   })
+
+  const codeVerifier = (supabase.auth as any)['pkce']?.code_verifier as
+    | string
+    | undefined
 
   if (error || !data.url) {
     return NextResponse.redirect(`${origin}/auth/error`)
