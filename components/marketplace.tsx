@@ -530,6 +530,7 @@ function PostCard({ post, userTokens, isOwner, currentUserId }: PostCardProps) {
               userId={currentUserId}
               postId={post.id}
               recipientId={post.user_id}
+              recipientName={post.profiles.name}
             />
           )}
           {!isOwner && (

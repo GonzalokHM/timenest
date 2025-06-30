@@ -30,12 +30,14 @@ interface AppointmentDialogProps {
   userId: string
   postId: string
   recipientId: string
+  recipientName: string
 }
 
 export function AppointmentDialog({
   userId,
   postId,
-  recipientId
+  recipientId,
+  recipientName
 }: AppointmentDialogProps) {
   const [open, setOpen] = useState(false)
   const [slots, setSlots] = useState<{ label: string; value: string }[]>([])
@@ -86,12 +88,17 @@ export function AppointmentDialog({
   }
   const handleConfirm = async () => {
     if (!selectedSlot) return
+    const isoSlot = new Date(selectedSlot).toISOString()
     let url = meetingUrl
     if (!url) {
       const res = await fetch('/api/zoom/create-meeting', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId })
+        body: JSON.stringify({
+          userId,
+          topic: `Cita con ${recipientName}`,
+          start_time: isoSlot
+        })
       })
       if (res.ok) {
         const data = await res.json()
@@ -102,7 +109,7 @@ export function AppointmentDialog({
       post_id: postId,
       from_user_id: userId,
       to_user_id: recipientId,
-      scheduled_at: selectedSlot,
+      scheduled_at: isoSlot,
       meeting_url: url || undefined
     })
     toast({ title: 'Cita agendada', description: '...' })

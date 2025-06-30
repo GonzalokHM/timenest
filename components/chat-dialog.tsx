@@ -87,9 +87,17 @@ export function ChatDialog({
           table: 'messages',
           filter: `post_id=eq.${postId}`
         },
-        (payload) => {
+        async (payload) => {
           const message = payload.new as Message
           setMessages((prev) => [...prev, message])
+
+          if (message.to_user_id === user.id) {
+            await supabase
+              .from('messages')
+              .update({ read: true })
+              .eq('id', message.id)
+            onMessagesRead?.()
+          }
         }
       )
       .subscribe()
