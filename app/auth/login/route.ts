@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
     response.cookies.set('sb-code-verifier', codeVerifier, {
       httpOnly: true,
       secure: true,
+      sameSite: 'none',
       path: '/',
       maxAge: 60 * 10
     })
