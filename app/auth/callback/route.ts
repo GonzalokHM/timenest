@@ -8,13 +8,10 @@ export async function GET(request: NextRequest) {
 
   if (code) {
     const codeVerifier = request.cookies.get('sb-code-verifier')?.value
-    if (codeVerifier) {
-      await (supabase.auth as any).storage.setItem(
-        'supabase.auth.token-code-verifier',
-        codeVerifier
-      )
-    }
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { error } = await (supabase.auth as any).exchangeCodeForSession(
+      code,
+      codeVerifier
+    )
     if (!error) {
       const response = NextResponse.redirect(`${origin}${next}`)
       response.cookies.delete('sb-code-verifier')
